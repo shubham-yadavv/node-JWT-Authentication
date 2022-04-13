@@ -8,13 +8,11 @@ const jwt = require('jsonwebtoken')
 
 require('dotenv').config();
 
-
 const JWT_SECRET = process.env.JWT_SECRET || 'secret'
 const uri = process.env.ATLAS_URI;
 const port = process.env.PORT || 8080;
 
 mongoose.connect(uri, { useNewUrlParser: true});
-
 
 const app = express()
 app.use('/', express.static(path.join(__dirname, 'static')))
@@ -63,7 +61,6 @@ app.post('/api/login', async (req, res) => {
 	}
 
 	if (await bcrypt.compare(password, user.password)) {
-		// the username, password combination is successful
 
 		const token = jwt.sign(
 			{
@@ -107,7 +104,6 @@ app.post('/api/register', async (req, res) => {
 		console.log('User created successfully: ', response)
 	} catch (error) {
 		if (error.code === 11000) {
-			// duplicate key
 			return res.json({ status: 'error', error: 'Username already in use' })
 		}
 		throw error

@@ -34,7 +34,7 @@
 				}).then((res) => res.json())
 
 				if (result.status === 'ok') {
-					// everythign went fine
+
 					console.log('Got the token: ', result.data)
 					localStorage.setItem('token', result.data)
 					alert('Success')

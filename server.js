@@ -2,17 +2,19 @@ const express = require('express')
 const path = require('path')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
-const User = require('./model/user')
+const User = require('./model/user.model')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
-const JWT_SECRET = 'sdjkfh8923yhjdksbfma@#*(&@*!^#&@bhjb2qiuhesdbhjdsfg839ujkdhfjk'
+require('dotenv').config();
 
-mongoose.connect('mongodb://localhost:27017/login-app-db', {
-	useNewUrlParser: true,
-	useUnifiedTopology: true,
-	useCreateIndex: true
-})
+
+const JWT_SECRET = process.env.JWT_SECRET || 'secret'
+const uri = process.env.ATLAS_URI;
+const port = process.env.PORT || 8080;
+
+mongoose.connect(uri, { useNewUrlParser: true});
+
 
 const app = express()
 app.use('/', express.static(path.join(__dirname, 'static')))
@@ -114,6 +116,6 @@ app.post('/api/register', async (req, res) => {
 	res.json({ status: 'ok' })
 })
 
-app.listen(9999, () => {
+app.listen(port, () => {
 	console.log('Server up at 9999')
 })

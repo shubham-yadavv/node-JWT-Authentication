@@ -112,6 +112,22 @@ app.post('/api/register', async (req, res) => {
 	res.json({ status: 'ok' })
 })
 
+
+app.get('/users', (req, res) => {
+	User.find({}, (err, users) => {
+		if (err) {
+			res.send(err)
+			}
+			res.json(users)
+			})
+	})
+		
 app.listen(port, () => {
-	console.log('Server up at 9999')
+	console.log(`server started on port ${port}`)
 })
+
+mongoose.connection.on('open', () => {
+	console.log('MongoDB connected')
+
+}
+)

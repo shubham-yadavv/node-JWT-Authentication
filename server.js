@@ -9,6 +9,7 @@ const jwt = require('jsonwebtoken');
 const secret = 'secret';
 
 mongoose.connect('mongodb+srv://shubham:1234@backend.xh5qinh.mongodb.net/?retryWrites=true&w=majority')
+//mongoose.connect('mongodb://localhost:27017/authentication')
     .then(() => {
         console.log('Connected to MongoDB');
     }
@@ -24,30 +25,64 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 
 
-app.post('/api/login', async (req, res) => {
-	
-    const {username, password} = req.body;
+app.post('/api/change-password', async (req, res) => {
+	const { token, newpassword: plainTextPassword } = req.body
 
-    const user = await User.findOne({username}).lean();   
+	if (!plainTextPassword || typeof plainTextPassword !== 'string') {
+		return res.json({ status: 'error', error: 'Invalid password' })
+	}
+
+	if (plainTextPassword.length < 5) {
+		return res.json({
+			status: 'error',
+			error: 'Password too small. Should be atleast 6 characters'
+		})
+	}
+
+	try {
+		const user = jwt.verify(token, secret)
+
+		const _id = user.id
+
+		const password = await bcrypt.hash(plainTextPassword, 10)
+
+		await User.updateOne(
+			{ _id },
+			{
+				$set: { password }
+			}
+		)
+		res.json({ status: 'ok' })
+	} catch (error) {
+		console.log(error)
+		res.json({ status: 'error', error: ';))' })
+	}
+})
+
+app.post('/api/login', async (req, res) => {
+
+    const { username, password } = req.body;
+
+    const user = await User.findOne({ username }).lean();
     if (!user) {
         return res.status(400).send('User not found');
     }
 
 
-    if(bcrypt.compare(password, user.password)) {
+    if (bcrypt.compare(password, user.password)) {
         const token = jwt.sign({
-            _id: user._id, 
+            _id: user._id,
             username: user.username
         }, secret);
 
-	    return res.json({ status: 'ok', data: token });
+        return res.json({ status: 'ok', data: token });
 
 
     }
 
-    res.json({ status: 'error', data: 'Invalid password'});
+    res.json({ status: 'error', data: 'Invalid password' });
 
-	
+
 })
 
 app.post('/api/register', async (req, res) => {

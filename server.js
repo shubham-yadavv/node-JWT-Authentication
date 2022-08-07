@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const User = require('./model/user.model');
 const jwt = require('jsonwebtoken');
 
-const secret = 'secret';
+const secret = 'asdfg;lkjh';
 
 mongoose.connect('mongodb+srv://shubham:1234@backend.xh5qinh.mongodb.net/?retryWrites=true&w=majority')
 //mongoose.connect('mongodb://localhost:27017/authentication')

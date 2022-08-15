@@ -51,7 +51,7 @@ exports.loginUser = async (req, res) => {
   }
 
   if (await bcrypt.compare(password, user.password)) {
-    // the username, password combination is successful
+
 
     const token = jwt.sign(
       {
